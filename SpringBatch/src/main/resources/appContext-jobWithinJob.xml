@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch
+http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/integration/jms
+http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd
+http://www.springframework.org/schema/integration
+http://www.springframework.org/schema/integration/spring-integration.xsd
+http://www.springframework.org/schema/jdbc
+http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+">
+	<batch:job id="childJob" xmlns="http://www.springframework.org/schema/batch">
+		<step id="childJobFirstStep">
+			<tasklet ref="childJobFirstTasklet" />
+		</step>
+	</batch:job>
+
+	<job id="parentJob" xmlns="http://www.springframework.org/schema/batch">
+		<step id="parentJobFirstStep" next="launchChild">
+			<tasklet ref="parentJobFirstTasklet" />
+		</step>
+
+		<step id="launchChild">
+			<batch:job ref="childJob" job-launcher="jobLauncher" job-parameters-extractor="jobParamsExtractor"/>
+		</step>
+	</job>
+	
+	<bean id="jobParamsExtractor" class="org.springframework.batch.core.step.job.DefaultJobParametersExtractor">
+    <property name="keys">
+        <list>
+            <value>Job2Param1</value>
+            <value>Job2Param2</value>
+        </list>
+    </property>
+</bean>
+
+	<bean id="childJobFirstTasklet" class="com.btamilmani.job.tasklet.ChildJobFirstTasklet"
+		scope="step" />
+	<bean id="parentJobFirstTasklet" class="com.btamilmani.job.tasklet.ParentJobFirstTasklet"
+		scope="step" />
+
+</beans>

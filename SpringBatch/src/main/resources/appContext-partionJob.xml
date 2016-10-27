@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch
+http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/integration/jms
+http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd
+http://www.springframework.org/schema/integration
+http://www.springframework.org/schema/integration/spring-integration.xsd
+http://www.springframework.org/schema/jdbc
+http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+">
+
+	<!--Master configurations -->
+	<!-- <job id="empJob"> <step id="step1" next="step2"> <tasklet> <chunk reader="itemReader" 
+		writer="cvsFileItemWriter" commit-interval="1"> </chunk> </tasklet> </step> 
+		<split id="step2"> <flow> <step id="step2.1"> <tasklet ref="zipCreatorTasklet" 
+		/> </step> </flow> <flow> <step id="step2.2"> <tasklet ref="dummyTasklet" 
+		/> </step> </flow> </split> </job> -->
+
+	<!-- 100 4 1 - 25 26- 50 51 -75 76 - 100 -->
+
+	<bean id="rangePartitioner" class="com.btamilmani.batch.partitioner.TobacoRangePartitioner" />
+
+	<job id="partitionedJob" xmlns="http://www.springframework.org/schema/batch">
+		<step id="masterStep">
+			<partition step="slave" partitioner="rangePartitioner">
+				<handler grid-size="4" task-executor="simpleAsyncTaskExecutor" />
+			</partition>
+		</step>
+	</job>
+
+		<batch:step id="slave" >
+			<batch:tasklet ref="partitionedTasklet" />
+		</batch:step>
+
+		<bean id="partitionedTasklet" class="com.btamilmani.job.tasklet.PartitionedTasklet"
+		scope="step" />
+	
+
+</beans>

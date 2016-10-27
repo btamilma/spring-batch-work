@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch
+http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/integration/jms
+http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd
+http://www.springframework.org/schema/integration
+http://www.springframework.org/schema/integration/spring-integration.xsd
+http://www.springframework.org/schema/jdbc
+http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+">
+
+	<!--Master configurations -->
+	<!-- <job id="empJob"> <step id="step1" next="step2"> <tasklet> <chunk reader="itemReader" 
+		writer="cvsFileItemWriter" commit-interval="1"> </chunk> </tasklet> </step> 
+		<split id="step2"> <flow> <step id="step2.1"> <tasklet ref="zipCreatorTasklet" 
+		/> </step> </flow> <flow> <step id="step2.2"> <tasklet ref="dummyTasklet" 
+		/> </step> </flow> </split> </job> -->
+
+	<!-- -->
+
+
+	<job id="simpleJob" xmlns="http://www.springframework.org/schema/batch">
+
+
+		<step id="firstStep" next="secondStep">
+			<tasklet ref="firstTasklet" />
+			<!-- <next on="COMPLETED" to="secondStep" /> <next on="FAILED" to="markFailureStep" 
+				/> -->
+		</step>
+
+		<step id="secondStep">
+			<tasklet ref="secondTasklet">
+				<listeners>
+					<listener ref="stepListenerExample" />
+				</listeners>
+			</tasklet>
+		</step>
+
+		<!-- <step id="markFailureStep"> <tasklet ref="markFailureTasklet" /> </step> -->
+
+		<batch:listeners>
+			<batch:listener ref="jobListenerExample" />
+		</batch:listeners>
+
+	</job>
+
+	<bean id="firstTasklet" class="com.btamilmani.job.tasklet.FirstTasklet"
+		scope="step" />
+	<bean id="secondTasklet" class="com.btamilmani.job.tasklet.SecondTasklet"
+		scope="step" />
+	<bean id="markFailureTasklet" class="com.btamilmani.job.tasklet.MarkFailureTasklet"
+		scope="step" />
+
+	<bean id="stepListenerExample" class="com.btamilmani.job.tasklet.StepListenerExample" />
+	<bean id="jobListenerExample" class="com.btamilmani.job.tasklet.JobListenerExample" />
+
+</beans>

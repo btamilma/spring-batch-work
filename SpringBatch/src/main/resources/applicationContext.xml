@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<import resource="classpath:appContext-dataAccess.xml"/>
+<import resource="classpath:batch-integration-receiver.xml"/>
+<import resource="classpath:jobRepo.xml"/>
+<import resource="classpath:sample-job.xml"/>
+<import resource="classpath:appContext-generateTobacoReportJob.xml"/>
+<import resource="classpath:appContext-loadTobacoDataJob.xml"/>
+<import resource="classpath:appContext-partionJob.xml"/>
+<import resource="classpath:appContext-jobWithinJob.xml"/>
+<bean id="b" class="com.btamilmani.ClassB"></bean>
+
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="locations">
+		<value>application.properties</value>
+	</property>
+</bean>
+
+</beans>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch
+http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/integration/jms
+http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd
+http://www.springframework.org/schema/integration
+http://www.springframework.org/schema/integration/spring-integration.xsd
+http://www.springframework.org/schema/jdbc
+http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+">
+
+
+	<bean id="tobacoDataDto" class="com.btamilmani.dto.TobacoDataDto" />
+
+	<job id="loadTobacoData" xmlns="http://www.springframework.org/schema/batch">
+		<step id="loadDataIntoTable">
+			<tasklet>
+				<chunk reader="tobacaDataReader" writer="tobacoDataWriter"
+					commit-interval="${tobaco.load.commit.interval}" skip-limit="100">
+					<skippable-exception-classes>
+						<include
+							class="org.springframework.batch.item.file.FlatFileParseException" />
+					</skippable-exception-classes>
+				</chunk>
+			</tasklet>
+		</step>
+	</job>
+
+	<bean id="tobacaDataReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+		<property name="resource"
+			value="file:${dir.path.input}/Youth_Tobacco_Survey__YTS__Data.csv" />
+		<property name="linesToSkip" value="1" />
+		<property name="lineMapper">
+			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+				<!-- split it -->
+				<property name="lineTokenizer">
+					<bean
+						class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+						<property name="names"
+							value="year,loc_abbr,Loc_desc,topic_type,topic_desc,measure_desc,data_source,response,data_val_unit,data_val_type,data_val,data_val_foot_symbol,data_val_foot,data_val_std_err,low_confidence_limit,high_confidence_limit,sample_size,gender,race,age,education,geo_loc,topic_type_id,topic_id,measure_id,stratification_d1,stratification_d2,stratification_d3,stratification_d4,sub_measure_id,display_order" />
+					</bean>
+				</property>
+				<property name="fieldSetMapper">
+					<!-- return back to reader, rather than a mapped object. -->
+					<!-- <bean class="org.springframework.batch.item.file.mapping.PassThroughFieldSetMapper" 
+						/> -->
+					<!-- map to an object -->
+					<bean
+						class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+						<property name="prototypeBeanName" value="tobacoDataDto" />
+					</bean>
+				</property>
+
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="tobacoDataWriter"
+		class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sql">
+			<value>
+            <![CDATA[
+            	insert into tobaco_survey
+			values (:year, :loc_abbr,:Loc_desc,:topic_type,:topic_desc,:measure_desc,:data_source,:response,:data_val_unit,:data_val_type,:data_val,:data_val_foot_symbol,:data_val_foot,:data_val_std_err,:low_confidence_limit,:high_confidence_limit,:sample_size,:gender,:race,:age,:education,:geo_loc,:topic_type_id,:topic_id,:measure_id,:stratification_d1,:stratification_d2,:stratification_d3,:stratification_d4,:sub_measure_id,:display_order)
+            ]]>
+			</value>
+		</property>
+		<!-- It will take care matching between object property and sql name parameter -->
+		<property name="itemSqlParameterSourceProvider">
+			<bean
+				class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />
+		</property>
+	</bean>
+
+	<bean id="stepListenerExample" class="com.btamilmani.job.tasklet.StepListenerExample" />
+	<bean id="jobListenerExample" class="com.btamilmani.job.tasklet.JobListenerExample" />
+
+</beans>

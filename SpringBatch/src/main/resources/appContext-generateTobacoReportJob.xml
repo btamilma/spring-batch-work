@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch
+http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/integration/jms
+http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd
+http://www.springframework.org/schema/integration
+http://www.springframework.org/schema/integration/spring-integration.xsd
+http://www.springframework.org/schema/jdbc
+http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+	<job id="generateTobacoReport" xmlns="http://www.springframework.org/schema/batch">
+		<batch:listeners>
+			<batch:listener ref="jobListenerExample">
+			</batch:listener>
+		</batch:listeners>
+		<batch:step id="genTobacoReport">
+			<batch:tasklet>
+				<batch:chunk reader="tobacoReportItemReader" writer="tobacoReportWriter"
+					commit-interval="100" />
+			</batch:tasklet>
+		</batch:step>
+	</job>
+
+	<bean id="tobacoReportItemReader"
+		class="org.springframework.batch.item.database.JdbcCursorItemReader"
+		scope="step">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sql"
+			value="SELECT year, loc_abbr, Loc_desc FROM tobaco_survey" />
+		<property name="rowMapper">
+			<bean class="com.btamilmani.dto.TobacoReportRowMapper" />
+		</property>
+	</bean>
+
+	<bean id="tobacoReportWriter" class="org.springframework.batch.item.file.FlatFileItemWriter"
+		scope="step">
+		<property name="resource"
+			value="file:${dir.path.report}/#{jobParameters[outputFile]}" />
+		<property name="headerCallback">
+			<bean class="com.btamilmani.header.TobacoFileHeaderWriter">
+				<property name="header" value="YEAR|LocAbbreviation|LocationDetails" />
+			</bean>
+		</property>
+		<property name="lineAggregator">
+			<!-- An Aggregator which converts an object into delimited list of strings -->
+			<bean
+				class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+				<property name="delimiter" value="|" />
+				<property name="fieldExtractor">
+					<!-- Extractor which returns the value of beans property through reflection -->
+					<bean
+						class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+						<property name="names" value="year,loc_abbr, Loc_desc" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+</beans>
