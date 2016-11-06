@@ -59,7 +59,7 @@ public class JobLaunchController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@RequestMapping(value="launchTobacoDataLoad", method=RequestMethod.GET)
 	public void launchTobacoDataLoad(HttpServletRequest request) {
-		inputChannel.send(MessageBuilder.withPayload(request.getParameter("jobId")).build());
+		inputChannel.send(MessageBuilder.withPayload(request.getParameter("fileName")).build());
 		
 	}
 }

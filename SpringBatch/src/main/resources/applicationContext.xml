@@ -11,11 +11,12 @@
 <import resource="classpath:appContext-loadTobacoDataJob.xml"/>
 <import resource="classpath:appContext-partionJob.xml"/>
 <import resource="classpath:appContext-jobWithinJob.xml"/>
+<import resource="classpath:appContext-intFilePoller.xml"/>
 <bean id="b" class="com.btamilmani.ClassB"></bean>
 
 <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 	<property name="locations">
-		<value>application.properties</value>
+		<value>classpath:application.properties</value>
 	</property>
 </bean>
 

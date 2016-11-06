@@ -33,10 +33,10 @@ http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
 		</step>
 	</job>
 
-	<bean id="tobacaDataReader" class="org.springframework.batch.item.file.FlatFileItemReader">
-		<property name="resource"
-			value="file:${dir.path.input}/Youth_Tobacco_Survey__YTS__Data.csv" />
-		<property name="linesToSkip" value="1" />
+	<bean id="tobacaDataReader" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
+		<!-- <property name="resource" value="file:${dir.path.input}/Youth_Tobacco_Survey__YTS__Data.csv" /> -->
+		<property name="resource" value="file:${dir.path.int.input}/#{jobParameters['fileName']}" />
+			
 		<property name="lineMapper">
 			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<!-- split it -->
