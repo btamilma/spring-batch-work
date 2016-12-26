@@ -15,7 +15,7 @@
 
 	<int:control-bus input-channel="controlChannel"/>
 
-	<int-file:inbound-channel-adapter id="filesInChannel"
+	<int-file:inbound-channel-adapter id="filesInChannelAdapter"
 		directory="file:${dir.path.int.input}" auto-startup="false">
 		<int:poller id="poller" fixed-rate="5000" />
 	</int-file:inbound-channel-adapter>

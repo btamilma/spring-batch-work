@@ -34,6 +34,10 @@ public class JobLaunchController {
 	@Autowired
 	@Qualifier("inputChannel")
 	MessageChannel inputChannel;
+	
+	@Autowired
+	@Qualifier("controlChannel")
+	MessageChannel controlChannel;
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@RequestMapping(value="launchJob", method=RequestMethod.GET)
@@ -60,6 +64,13 @@ public class JobLaunchController {
 	@RequestMapping(value="launchTobacoDataLoad", method=RequestMethod.GET)
 	public void launchTobacoDataLoad(HttpServletRequest request) {
 		inputChannel.send(MessageBuilder.withPayload(request.getParameter("fileName")).build());
+		
+	}
+	
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@RequestMapping(value="launchFilePoller", method=RequestMethod.GET)
+	public void launchFilePoller() {
+		controlChannel.send(MessageBuilder.withPayload("@'filesInChannelAdapter.adapter'.start()").build());
 		
 	}
 }
