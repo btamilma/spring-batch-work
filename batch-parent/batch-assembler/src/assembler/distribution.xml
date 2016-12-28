@@ -1,0 +1,41 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+	<id>distribution</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<!-- <files> <file> <source>${basedir}/targer/lib</source> <outputDirectory>/</outputDirectory> 
+		<filtered>true</filtered> </file> </files> -->
+
+	<fileSets>
+		<fileSet>
+			<directory>${basedir}/target/lib</directory>
+			<outputDirectory>/lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+			<excludes>
+				<exclude>README.txt</exclude>
+				<exclude>NOTICE.txt</exclude>
+			</excludes>
+		</fileSet>
+		
+		<!-- Include the batch-assembler.jar also in the Zip -->
+		<fileSet>
+			<directory>${project.build.directory}</directory>
+			<outputDirectory>/lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+
+	<files>
+		<file>
+			<source>src/propfolder/db.properties</source>
+			<outputDirectory>/props</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+	</files>
+</assembly>

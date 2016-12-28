@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.balatamilmani</groupId>
+		<artifactId>batch-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>batch-code</artifactId>
+	<name>batch-code</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc</artifactId>
+			<version>7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>8.5.9</version>
+		</dependency>
+
+		<!-- Spring Integration Dependencies -->
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-core</artifactId>
+			<version>${spring.integration.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-jms</artifactId>
+			<version>${spring.integration.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-file</artifactId>
+			<version>${spring.integration.version}</version>
+		</dependency>
+
+		<!-- Spring Batch Dependencies -->
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-integration</artifactId>
+			<version>${spring.batch.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-core</artifactId>
+			<version>${spring.batch.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-infrastructure</artifactId>
+			<version>${spring.batch.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<properties>
+		<spring.integration.version>4.3.6.RELEASE</spring.integration.version>
+		<spring.batch.version>3.0.7.RELEASE</spring.batch.version>
+		<spring.version>4.3.2.RELEASE</spring.version>
+	</properties>
+</project>
