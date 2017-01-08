@@ -1,0 +1,7 @@
+SET database sql syntax ORA TRUE;
+
+DROP SCHEMA PUBLIC CASCADE
+
+
+CREATE TABLE SWIM_STUDENT (student_id NUMBER, first_name VARCHAR2(100), last_name VARCHAR2(100), street VARCHAR2(200), city VARCHAR2(100), 
+state VARCHAR2(2), phone VARCHAR2(20));

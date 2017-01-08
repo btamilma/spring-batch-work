@@ -1,0 +1,45 @@
+<div>
+	<h1>Add Employee</h1>
+	<br>
+	<font color="green">{{successMsg}}</font>
+	<p>
+	<table border="1">
+		<tr>
+			<td>ID</td>
+			<td><input ng-model="id"></td>
+		</tr>
+		<tr>
+			<td>First Name</td>
+			<td><input ng-model="fName"></td>
+		</tr>
+		<tr>
+			<td>Last Name</td>
+			<td><input ng-model="lName"></td>
+		</tr>
+		<tr>
+			<td>Address</td>
+			<td>
+			<table>
+				<tr>
+					<td>Street</td>
+					<td><input ng-model="street"></td></td>
+				</tr>
+				<tr>
+					<td>City</td>
+					<td><input ng-model="city"></td></td>
+				</tr>
+												<tr>
+					<td>State</td>
+					<td><input ng-model="state"></td></td>
+				</tr>
+				<tr>
+					<td>Zip</td>
+					<td><input ng-model="zip"></td></td>
+				</tr>				
+			</table>
+			</td>
+		</tr>
+	</table>
+	<button ng-click="submitEmployee()">Submit</button>
+	<br> <a href="#viewEmployee">View Employee</a>
+</div>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		">
+
+	<context:component-scan base-package="com.balatamilmani" />
+	
+	<bean class="com.balatamilmani.restangular.service.TestBean">
+		<property name="setValue">
+			<bean class="org.springframework.util.StringUtils" factory-method="commaDelimitedListToSet">
+				<constructor-arg type="java.lang.String" value="aaa,bbb,ccc"></constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:sample.properties</value>
+		</property>
+	</bean>
+
+	<jdbc:embedded-database id="dataSource" type="HSQL" />
+	<jdbc:initialize-database data-source="dataSource">
+		<jdbc:script location="classpath:hsqlddl/ddl.sql" />
+		<jdbc:script location="classpath:hsqldml/dml.sql" />
+	</jdbc:initialize-database>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+
+		<property name="persistenceUnitName" value="rstPersistenceUnit" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.balatamilmani.restangular.model</value>
+			</list>
+		</property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+				<!-- http://stackoverflow.com/questions/438146/hibernate-hbm2ddl-auto-possible-values-and-what-they-do -->
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL">
+			<value>vm://localhost?broker.persistent=false</value>
+		</property>
+	</bean>
+
+	<!-- Pooled Spring connection factory -->
+	<bean id="connectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory" ref="amqConnectionFactory" />
+		<!-- <constructor-arg ref="amqConnectionFactory" /> -->
+	</bean>
+
+	<bean id="destinationQ" class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- name of the queue -->
+		<!-- <constructor-arg index="0" value=" SpringIntQ" /> -->
+		<constructor-arg index="0" value=" queue.request" />
+	</bean>
+
+	<!-- JmsTemplate Definition -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="defaultDestination" ref="destinationQ" />
+	</bean>
+
+</beans>

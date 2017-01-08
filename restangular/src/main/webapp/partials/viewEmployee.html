@@ -1,0 +1,27 @@
+<div>
+<h1> View Employee</h1>
+<table border="1">
+  <tr>
+  	<th>ID</th>
+  	<th>First Name</th>
+  	<th>Last Name</th>
+  </tr>
+  <tr ng-repeat="employee in employees">
+    <td>{{ employee.id }}</td>
+    <td>{{ employee.firstName }}</td>
+    <td>{{ employee.lastName }}</td>
+  </tr>
+</table>
+
+{{errMsg}}
+
+<input ng-model="fileId">
+<br/>
+<embed ng-src="{{content}}" style="width:200px;height:200px;"></embed>
+<br>
+<a href="#addEmployee">Add Employee</a>
+<a href="http://localhost:8181/restangular/rest/downloadFile">Download File</a>
+<a href ng-click="downloadFile()">Open File w Blob</a>
+<br>
+<a href ng-click="downloadFileWoBlob()">Open File1 w/o Blob</a>
+</div>
