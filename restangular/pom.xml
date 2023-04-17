@@ -198,7 +198,7 @@
 		<!-- <spring.version>4.2.0.RELEASE</spring.version> -->
 		<!-- <spring.version>4.1.4.RELEASE</spring.version> -->
 		<!-- <spring.version>2.5.6</spring.version> -->
-		<com.jackson.core-version>2.4.3</com.jackson.core-version>
+		<com.jackson.core-version>[2.12.7.1,)</com.jackson.core-version>
 		<codehaus.jackson.version>1.6.0</codehaus.jackson.version>
 	</properties>
 </project>
